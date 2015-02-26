@@ -6,6 +6,7 @@
 package backend.expr;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Set;
  */
 public class AccumCountDistinct implements AccumExpression {
     private final Expression extractor;
-    private final Set<Object> set = new HashSet();
+    private final Set<Object> set = new LinkedHashSet();
 
     public AccumCountDistinct(Expression field) {
         this.extractor = field;

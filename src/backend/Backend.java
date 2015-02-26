@@ -99,6 +99,7 @@ public class Backend extends javax.swing.JFrame {
         cbbxCtgr = new javax.swing.JComboBox();
         btnLoadQuery = new javax.swing.JButton();
         btnSaveQuery = new javax.swing.JButton();
+        btnSaveResult = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -164,6 +165,13 @@ public class Backend extends javax.swing.JFrame {
             }
         });
 
+        btnSaveResult.setText("Save");
+        btnSaveResult.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveResultActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -185,7 +193,8 @@ public class Backend extends javax.swing.JFrame {
                     .addComponent(jScrollPane3)
                     .addComponent(jScrollPane2)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnSaveResult)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnRun)
                         .addGap(5, 5, 5)
                         .addComponent(btnStop))
@@ -220,10 +229,12 @@ public class Backend extends javax.swing.JFrame {
                         .addComponent(btnClear))
                     .addComponent(prgBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAddFolder)
-                    .addComponent(btnRun)
-                    .addComponent(btnStop))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnAddFolder)
+                        .addComponent(btnRun)
+                        .addComponent(btnStop))
+                    .addComponent(btnSaveResult))
                 .addContainerGap())
         );
 
@@ -313,6 +324,7 @@ public class Backend extends javax.swing.JFrame {
             });
             op.addEventListener(ExprLogOperation.EVENT_TYPE.ERROR, (e) -> {
                 this.btnStopActionPerformed(null);
+                ((Throwable) e.getParam()).printStackTrace();
                 JOptionPane.showMessageDialog(this, e.getParam().toString(), "Error", JOptionPane.ERROR_MESSAGE);
             });
             this.prgBar.setValue(0);
@@ -387,6 +399,34 @@ public class Backend extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSaveQueryActionPerformed
+
+    private void btnSaveResultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveResultActionPerformed
+        // TODO add your handling code here:
+        JFileChooser fc = new JFileChooser(Config.LAST_DIR);
+        
+        if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION)
+            return;
+        
+        File file = fc.getSelectedFile();
+        Config.LAST_DIR = file.getParent();
+        if (file.exists())
+        {
+            int sel = JOptionPane.showConfirmDialog(this, "Do you want to overwirte file " + file + "?",
+                    "Overwrite??", JOptionPane.YES_NO_OPTION);
+            if (sel != JOptionPane.YES_OPTION)
+                return;
+            
+            file.delete();
+        }
+        
+        String query = this.txaOutput.getText();
+        try (FileWriter fw = new FileWriter(file)) {
+            fw.write(query);
+            fw.flush();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSaveResultActionPerformed
 
     private boolean isLogFile(File f)
     {
@@ -501,6 +541,7 @@ public class Backend extends javax.swing.JFrame {
     private javax.swing.JButton btnLoadQuery;
     private javax.swing.JButton btnRun;
     private javax.swing.JButton btnSaveQuery;
+    private javax.swing.JButton btnSaveResult;
     private javax.swing.JButton btnStop;
     private javax.swing.JComboBox cbbxCtgr;
     private javax.swing.JScrollPane jScrollPane1;

@@ -24,7 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.json.simple.JSONValue;
 
 /**
  *
@@ -104,14 +103,18 @@ public class ExprLogOperation
                     
                     mappedData.forEach((k, logs) -> {
                         ArrayExprContext arrCtxs = ArrayExprContext.make(logs);
-                        List<AccumExpression> accums = data.get(k);
-                        if (accums == null)
-                        {
-                            accums = (List) this.reducer.eval(null);
-                            data.put(k, accums);
-                        }
                         
-                        accums.forEach((accum) -> accum.eval(arrCtxs));
+                        synchronized (data)
+                        {
+                                List<AccumExpression> accums = data.get(k);
+                                if (accums == null)
+                                {
+                                    accums = (List) this.reducer.eval(null);
+                                    data.put(k, accums);
+                                }
+
+                                accums.forEach((accum) -> accum.eval(arrCtxs));
+                        }
                     });
 
                     this.dispatchEvent(new SDEvent(EVENT_TYPE.TASK_COMPLETED, i.incrementAndGet()));

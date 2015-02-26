@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -25,10 +26,13 @@ import org.joda.time.format.DateTimeFormatter;
 public class FileGroup {
     public static void main(String []args) throws IOException
     {
+        boolean Done = false;
+        do
+        {
         DateTimeFormatter templFMT = DateTimeFormat.forPattern("yyyy-MM-dd");
         DateTimeFormatter subDirFMT = DateTimeFormat.forPattern("yyMMdd");
         
-        JFileChooser fChooser = new JFileChooser("E:\\PLOG\\LOG");
+        JFileChooser fChooser = new JFileChooser("D:\\CGKStudio\\log");
         fChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 //        fChooser.setFileFilter(new FileNameExtensionFilter("LOG File",""));
         if (fChooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION)
@@ -61,7 +65,7 @@ public class FileGroup {
                         File target = new File(subDir + "\\" + file.getName());
                         if (!target.exists())
                         {
-                            Files.move(new File(dir.getAbsolutePath()+ "\\" + file.getName()).toPath(),
+                            Files.copy(new File(dir.getAbsolutePath()+ "\\" + file.getName()).toPath(),
                                     target.toPath());
                         }
                     } catch (IOException ex) {
@@ -72,5 +76,12 @@ public class FileGroup {
             
             d = d.plusDays(1);
         }
+        
+        int sel;
+        sel = JOptionPane.showConfirmDialog(fChooser, "Do it again?", "Again", JOptionPane.YES_NO_OPTION);
+            if (sel != JOptionPane.YES_OPTION)
+                Done = true;
+        }
+        while(!Done);
     }
 }

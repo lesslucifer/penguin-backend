@@ -49,6 +49,8 @@ public class LogRecord implements ExprContext {
         LogRecord rec = new LogRecord(ct, log);
         switch (rec.getCategory())
         {
+            case UNKNOWN:
+                return rec;
             case HANHDONG:
             case EVENT:
                 return new ActionRecord(rec);
@@ -74,6 +76,10 @@ public class LogRecord implements ExprContext {
         if (dat.startsWith("raw"))
         {
             return this.getRawData(Integer.parseInt(dat.substring(4)));
+        }
+        else if (dat.startsWith("#"))
+        {
+            return this.getRawData(Integer.parseInt(dat.substring(1)));
         }
         
         return null;

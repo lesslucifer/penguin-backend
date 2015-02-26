@@ -6,8 +6,8 @@
 package backend.expr;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import org.json.simple.JSONValue;
 
 /**
  *
@@ -32,7 +32,17 @@ interface ExprParser {
             }
         }
         
+        if (js instanceof List)
+        {
+            return ListExpr.Parser.PARSER.parse(js);
+        }
+        
         return new DataExpr(js);
+    }
+    
+    static Expression parseExprF(String s, Object js)
+    {
+        return  parseExpr((js instanceof String)?FieldExpr.P_ID:s, js);
     }
     
     static class __
@@ -55,6 +65,12 @@ interface ExprParser {
             PARSERS.put(WarppedExprParser.P_ID, WarppedExprParser.PARSER);
             PARSERS.put(GroupExpr.P_ID, GroupExpr.Parser.PARSER);
             PARSERS.put(IntCastExpr.P_ID, IntCastExpr.Parser.PARSER);
+            PARSERS.put(TimeCastExpr.P_ID, TimeCastExpr.Parser.PARSER);
+            PARSERS.put(ChooseExpr.P_ID, ChooseExpr.Parser.PARSER);
+            PARSERS.put(CompareExpr.P_ID, CompareExpr.Parser.PARSER);
+            PARSERS.put(DTNExpr.P_ID, DTNExpr.Parser.PARSER);
+            PARSERS.put(NTDExpr.P_ID, NTDExpr.Parser.PARSER);
+            PARSERS.put(ExprExpr.P_ID, ExprExpr.Parser.PARSER);
         }
     }
 }

@@ -15,6 +15,7 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public class StdRecord extends LogRecord {
     public static final DateTimeFormatter DT_FMT = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss");
+    public static final DateTimeFormatter D_FMT = DateTimeFormat.forPattern("yyyy-MM-dd");
     
     private DateTime time;
     private final String uid;
